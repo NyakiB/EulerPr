@@ -21,61 +21,49 @@ data=np.array([[8, 2, 22, 97, 38, 15,0, 40, 0, 75, 4, 5, 7, 78, 52, 12, 50, 77, 
                ,[20, 73, 35, 29, 78, 31, 90, 1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57, 5, 54]
                ,[1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1 ,89, 19, 67, 48]],np.int8)
 
-def horizontal_max_product(arr,n):
+def hor_or_ver_max_product(arr,n,k):
     value,elements=1,[]
-    for i in  range(20):
-        for j in range(17):
-            compare=reduce(lambda x,y:x*y,arr[i][j:j+n],1)
-            element=arr[i][j:j+4]
-            if compare>value:
-                value=compare
-                elements=[]
-                elements.append(element)
+    if k==0:
+        for i in  range(20):
+            for j in range(17):
+                compare=reduce(lambda x,y:x*y,arr[i][j:j+n],1)
+                element=arr[i][j:j+4]
+                if compare>value:
+                    value,elements=compare,[]
+                    elements.append(element)
+    else:
+            for i in range(20):
+                for j in range(17):
+                    compare=reduce(lambda x,y:x*y,arr[:,i][j:j+n],1)
+                    element=arr[:,i][j:j+n]
+                    if compare>value:
+                        value,elements=compare,[]
+                        elements.append(element)
     return (value,elements)
 
-def vertical_max_product(arr,n):
+def diag_or_anti_max_product(arr,k):
     value,elements=1,[]
-    for i in range(20):
-        for j in range(17):
-            compare=reduce(lambda x,y:x*y,arr[:,i][j:j+n],1)
-            element=arr[:,i][j:j+n]
-            if compare>value:
-                value=compare
-                elements=[]
-                elements.append(element)
+    if k==0:
+        for i in range(17):
+            for j in range(17):
+                compare=reduce(lambda x,y:x*y,[arr[i][j],arr[i+1][j+1],arr[i+2][j+2],arr[i+3][j+3]],1)
+                if compare>value:
+                    value,elements=compare,[]
+                    elements.append([arr[i][j],arr[i+1][j+1],arr[i+2][j+2],arr[i+3][j+3]])
+    else:
+        for i in range(17):
+            for j in range(1,18):
+                compare=reduce(lambda x,y:x*y,[arr[i][-j],arr[i+1][-j-1],arr[i+2][-j-2],arr[i+3][-j-3]],1)
+                if compare>value:
+                    value,elements=compare,[]
+                    elements.append([arr[i][-j],arr[i+1][-j-1],arr[i+2][-j-2],arr[i+3][-j-3]])
     return (value,elements)
 
-def diagonal_max_product(arr):
-    value,elements=1,[]
-    for i in range(17):
-        for j in range(17):
-            compare=reduce(lambda x,y:x*y,[arr[i][j],arr[i+1][j+1],arr[i+2][j+2],arr[i+3][j+3]],1)
-            if compare>value:
-                value=compare
-                elements=[]
-                elements.append([arr[i][j],arr[i+1][j+1],arr[i+2][j+2],arr[i+3][j+3]])
-    return (value,elements)
-
-def antidiagonal_max_product(arr):
-    value,elements=1,[]
-    for i in range(17):
-        for j in range(1,18):
-            compare=reduce(lambda x,y:x*y,[arr[i][-j],arr[i+1][-j-1],arr[i+2][-j-2],arr[i+3][-j-3]],1)
-            if compare>value:
-                value=compare
-                elements=[]
-                elements.append([arr[i][-j],arr[i+1][-j-1],arr[i+2][-j-2],arr[i+3][-j-3]])
-    return (value,elements)
-
-hor=horizontal_max_product(data,4)
-ver=vertical_max_product(data,4)
-diag=diagonal_max_product(data)
-antidiag=antidiagonal_max_product(data)
+hor=hor_or_ver_max_product(data,4,0)
+ver=hor_or_ver_max_product(data,4,1)
+diag=diag_or_anti_max_product(data,0)
+antidiag=diag_or_anti_max_product(data,1)
 
 maximum=max(hor[0],ver[0],diag[0],antidiag[0])
 
 print(maximum)
-
-
-
-
